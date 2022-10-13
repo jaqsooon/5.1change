@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Data</h1>
+    <a href="/">Go To Home</a>
+    <a href="/all.html">Go To All</a>
+    <script>
+        async function getData() {
+            const response = await fetch('/api');
+            const data = await response.json();
+            for (item of data) {
+                const root = document.createElement('div');
+                const fname = document.createElement('div');
+                const geo = document.createElement('div');
+                const date = document.createElement('div');
+                const button = document.createElement("input");
+                const id = item._id;
+                const id_cast = { id };
+                button.type = "button";
+                button.value ="delete";
+                button.onclick = function (){ 
+                    const options = {
+                    method: 'DELETE',
+                    headers:  {
+                        'Content-Type': 'application/json'   
+                    },
+                    body: JSON.stringify(id_cast)
+                    };
+                    fetch('/api', options);
+                };
+
+                fname.textContent = `fname: ${item.fname}`;
+                geo.textContent = `${item.latitude}, ${item.longitude}`;
+                const dateString = new Date(item.timestamp).toLocaleString();
+                date.textContent = dateString;
+                
+                root.style.backgroundColor = "blue";
+                
+                root.append(fname, geo, date, button);
+                document.body.append(root);
+            }
+            console.log(data);
+        }
+        getData();
+    </script>
+</body>
+</html>
